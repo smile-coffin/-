@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 #include <ctype.h>
+#include <stdlib.h>
 
 extern void init_log();
 

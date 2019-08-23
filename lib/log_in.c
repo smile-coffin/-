@@ -6,11 +6,15 @@
 struct user {
     char user_name[30];
     char password[30];
-}w,r,*pw = &w,*pr = &r;
+};
+//w,r,*pw = &w,*pr = &r;
+
+//struct user *pw = calloc(1,sizeof(struct user));
+//struct user *pr = calloc(1,sizeof(struct user));
 
 void init_log()
 {
-   Create_directory("./user",0755);
+    Create_directory("./user",0755);
 }
 /*******************************************************************************
 * 函  数  名      : Judge_the_application
@@ -21,7 +25,8 @@ void init_log()
 int Judge_the_application(char *user_name,char *password)
 {
     FILE *fp;
-    //char name[30] = user_name;
+    struct user *pr = calloc(1,sizeof(struct user));
+
     if((fp = fopen("./user/Ulogin","ab+")) == NULL)
     {
         printf("打开文件失败\n");
@@ -33,21 +38,21 @@ int Judge_the_application(char *user_name,char *password)
     {
         fread(pr,sizeof(struct user),1,fp);
  
-        if(r.user_name[0] == '\0')break;  
+        if(pr->user_name[0] == '\0')break;  
 
-        if(strcmp(user_name,r.user_name) == 0)
+        if(strcmp(user_name,pr->user_name) == 0)
         {
-            if(strcmp(password,r.password) == 0)
+            if(strcmp(password,pr->password) == 0)
                 return 2;  
             else return 1; 
         }
            
-        bzero(r.user_name,30);
-        bzero(r.password,30);     
+        bzero(pr->user_name,30);
+        bzero(pr->password,30);     
     }
 
-    bzero(r.user_name,30);
-    bzero(r.password,30);
+    bzero(pr->user_name,30);
+    bzero(pr->password,30);
     fclose(fp);
 
     return 0;
@@ -61,6 +66,8 @@ int Judge_the_application(char *user_name,char *password)
 int Read_user()
 {
     FILE *fp;
+    struct user *pr = calloc(1,sizeof(struct user));
+
     if((fp = fopen("./user/Ulogin","ab+")) == NULL)
     {
         printf("打开文件失败\n");
@@ -72,14 +79,14 @@ int Read_user()
     {
         fread(pr,sizeof(struct user),1,fp);
  
-        if(r.user_name[0] == '\0')break;  
+        if(pr->user_name[0] == '\0')break;  
 
-        printf("账号：%s\n",r.user_name);
+        printf("账号：%s\n",pr->user_name);
 
-        printf("密码：%s\n",r.password);
+        printf("密码：%s\n",pr->password);
 
-        bzero(r.user_name,30);
-        bzero(r.password,30);     
+        bzero(pr->user_name,30);
+        bzero(pr->password,30);     
     }
     fclose(fp);
 
@@ -91,7 +98,7 @@ int Read_user()
 * 输      入      : 显示的行坐标和纵坐标\输入的最小长度和最大长度\字符串存放的地址 .
 * 返      回      : 成功返回0.
 *******************************************************************************/
-int Input_monitoring(int coordinate_h,int coordinate_l,int length_short, int length_long, char *Storage)
+int Input_monitoring(int coordinate_h,int coordinate_l,int length_short, int length_long, char *storage)
 {
     char buf_cache[30];
     bzero(buf_cache,30);
@@ -101,7 +108,7 @@ int Input_monitoring(int coordinate_h,int coordinate_l,int length_short, int len
     Terminal_ettings(1);
 
     char First_character;
-    //bzero(First_character,3);
+
     char next_character;
     fprintf(stdout,"\033[%d;%dH",coordinate_h,coordinate_l);
     //更新缓冲
@@ -112,14 +119,14 @@ int Input_monitoring(int coordinate_h,int coordinate_l,int length_short, int len
 
         while(1)
         {
-            next_character = fgetc(stdin);           //获取第二个以上的字符              
+            next_character = fgetc(stdin);           //获取第1个以上的字符              
 
             if(next_character == 27)                //Esc键退出
             {
                 Terminal_ettings(0);
                 return -1;
             }
-
+            //输入的字符长度大于等于最小长度可以回车退出
             if(next_character == '\n') 
             {
                 if(strlen(buf_cache) >= length_short)
@@ -131,7 +138,8 @@ int Input_monitoring(int coordinate_h,int coordinate_l,int length_short, int len
                 getchar(); getchar();
                 continue;
             }
-            else if(next_character == 127)
+            //backspace键
+            else if(next_character == 127 || next_character == 8)
             {
                 if(strlen(buf_cache) >= 1)
                 {
@@ -143,10 +151,10 @@ int Input_monitoring(int coordinate_h,int coordinate_l,int length_short, int len
                 }
                 else continue;               
             }
-
+            //只能输入小于最大长度的字符
             else if(strlen(buf_cache) >= length_long)
                 continue; 
-
+            //判断输入的是否为字母或数子字
             else if(isalnum(next_character))
             {
                 buf_cache[Subscript] = next_character;
@@ -154,13 +162,9 @@ int Input_monitoring(int coordinate_h,int coordinate_l,int length_short, int len
                 Subscript++;                 
             }               
         }
-        sprintf(Storage,"%s",buf_cache);
-        /* 
-        if(mod == 0)
-            sprintf(pw->user_name,"%s",buf_cache);
-        else
-            sprintf(pw->password,"%s",buf_cache);
-        */
+        //拷贝输入的字符
+        strcpy(storage,buf_cache);
+        //恢复终端显示
         Terminal_ettings(1);      
     return 0;
 }
@@ -175,6 +179,7 @@ int registered()
     FILE *fp;
     char user_cache[30];
     char password_cache[30];
+    struct user *pw = calloc(1,sizeof(struct user));
     
     if((fp = fopen("./user/Ulogin","ab+")) == NULL)
     {
@@ -228,6 +233,7 @@ int registered()
 *******************************************************************************/
 bool log_in()
 {
+    struct user *pw = calloc(1,sizeof(struct user));
     while (1)
     {
         //显示登录界面
