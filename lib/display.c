@@ -1,6 +1,6 @@
-#include "display.H"
-#include "key.H"
-#include "log_in.H"
+#include "display.h"
+#include "key.h"
+#include "log_in.h"
 char gameArea[ROW][COL] = {0};   	// 游戏区域数据
 /*******************************************************************************
 * 函  数  名      : Terminal_ettings

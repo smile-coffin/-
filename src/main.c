@@ -1,7 +1,7 @@
-#include "File_io.H"
-#include "log_in.H"
-#include "display.H"
-#include "key.H"
+#include "file_io.h"
+#include "log_in.h"
+#include "display.h"
+#include "key.h"
 
 //#define b
 

@@ -1,4 +1,4 @@
-#include "key.H"
+#include "key.h"
 
 int getInput(void)
 {

@@ -1,6 +1,6 @@
-#include "File_io.H"
-#include "display.H"
-#include "log_in.H"
+#include "file_io.h"
+#include "display.h"
+#include "log_in.h"
 
 //int amount_users;
 struct user {
